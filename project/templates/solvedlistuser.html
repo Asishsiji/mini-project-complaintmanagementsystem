@@ -1,0 +1,51 @@
+{% extends 'user.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Solved Complaints{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Solved Complaints</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-header bg-dark text-white text-center">
+                    <h4>Solved Complaints List</h4>
+                </div>
+                <div class="card-body">
+                    {% if complaints_list %}
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Complaint ID</th>
+                                    <th>Subject</th>
+                                    <th>Category</th>
+                                    <th>Date</th>
+                                    <th>Description</th>
+                                    <th>Status</th>
+            
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for complaint in complaints_list %}
+                                    <tr>
+                                        <td>{{ complaint.id }}</td>
+                                        <td>{{ complaint.subject }}</td>
+                                        <td>{{ complaint.type }}</td>
+                                        <td>{{ complaint.date|date:"d M Y"  }}</td>
+                                        <td><!-- complaint_detail.html -->
+                                            <a href="{% url 'generate_complaint_pdf' complaint.id %}" class="btn btn-primary">Download PDF</a>
+                                            </td>
+                                        <td style="color:green;font-weight:bold;">{{ complaint.status }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <p>No solved complaints found.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

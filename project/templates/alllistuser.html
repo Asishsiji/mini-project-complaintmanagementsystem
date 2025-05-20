@@ -1,0 +1,70 @@
+{% extends 'user.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}UnSolved Complaints{% endblock %}
+
+{% block extra_css %}
+<style>
+    .red {
+        color: red;
+        font-weight: bold;
+    }
+    .yellow {
+        color: orange;
+        font-weight: bold;
+    }
+    td {
+        word-wrap: break-word;
+        max-width: 200px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">UnSolved Complaints</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-header bg-dark text-white text-center">
+                    <h4>UnSolved Complaints List</h4>
+                </div>
+                <div class="card-body">
+                    {% if complaints_list %}
+                        <table class="table table-bordered table-striped table-hover text-center">
+                            <thead>
+                                <tr>
+                                    <th>Complaint ID</th>
+                                    <th>User ID</th>
+                                    <th>Subject</th>
+                                    <th>Category</th>
+                                    <th>Date</th>
+                                    <th>Description</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for complaint in complaints_list %}
+                                    <tr>
+                                        <td>{{ complaint.id }}</td>
+                                        <td>{{ complaint.user }}</td>
+                                        <td>{{ complaint.subject }}</td>
+                                        <td>{{ complaint.type }}</td>
+                                        <td>{{ complaint.date|date:"d M Y" }}</td>
+                                        <td> <a href="{% url 'generate_complaint_pdf' complaint.id %}" class="btn btn-primary">Download PDF</a></td>
+                                        <td style="color: {% if complaint.status == 'Pending' %}red{% else %}orange{% endif %}; font-weight: bold;">
+                                            {{ complaint.status }}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <p class="text-center text-muted">No unsolved complaints found.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

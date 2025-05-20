@@ -1,0 +1,28 @@
+<!-- filepath: e:\New folder (3)\project\templates\profile.html -->
+{% extends 'user.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Update Profile{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Update Profile</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-header bg-dark text-white text-center">
+                    <h4>Profile Information</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data" action="{% url 'profile' %}">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        {{ form2|crispy }}
+                        <button type="submit" class="btn btn-primary w-100 mt-3">Update Profile</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,64 @@
+<!-- templates/register.html -->
+{% extends 'index.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}Register - Complaint Management System{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        background-color: #f8f9fa;
+        color: #343a40;
+    }
+    .formsin {
+        min-height: 80vh;
+        max-width: 80%;
+        margin: auto;
+        align-items: center;
+        padding-top: 20px;
+    }
+    .card {
+        width: 100%;
+        max-width: 600px;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 20px;
+        border-radius: 10px;
+    }
+    .form-text {
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+    button {
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1 class="text-4xl font-extrabold text-center text-indigo-700 mt-4">REGISTRATION</h1>
+<div class="formsin">
+    {% load crispy_forms_tags %}
+    <form method="POST" action="{% url 'register' %}">
+        {% csrf_token %}
+        {{ form|crispy }}
+        {{ form2|crispy }}
+        <button type="submit" class="btn btn-primary mt-3">Register</button>
+    </form>
+{% if form.errors %}
+    <div class="alert alert-danger">
+        {{ form.errors }}
+    </div>
+{% endif %}
+{% if form2.errors %}
+    <div class="alert alert-danger">
+        {{ form2.errors }}
+    </div>
+{% endif %}
+account already exists? <a href="{% url 'login' %}">Login</a>
+    </div>
+    <div class="text-center">
+        <p class="form-text">By registering, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.</p>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends 'counter.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Solved Complaints{% endblock %}
+
+{% block content %}
+<form class="mb-4" method="GET">
+    <div class="row justify-content-center align-items-center">
+        <!-- Search Field -->
+        <div class="col-md-4 mb-2">
+            <input class="form-control" type="search" placeholder="Search" name="search">
+        </div>
+
+        <!-- Filter Dropdown -->
+        <div class="col-md-3 mb-2">
+            <select class="form-control" name="drop">
+                <option value="">-- Filter by Category --</option>
+                <option>ClassRoom</option>
+                <option>Teacher</option>
+                <option>Management</option>
+                <option>College</option>
+                <option>Hostel</option>
+                <option>Canteen</option>
+                <option>Other</option>
+            </select>
+        </div>
+
+        <!-- Apply Button -->
+        <div class="col-md-2 mb-2">
+            <button class="btn btn-outline-primary w-100" type="submit">Apply</button>
+        </div>
+    </div>
+</form>
+
+
+    <!-- Complaints Table -->
+    <div class="card">
+        <div class="card-header bg-dark text-white text-center">
+            <h4>Solved Complaints List</h4>
+        </div>
+        <div class="card-body">
+            {% if complaint_list %}
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Complaint ID</th>
+                            <th>Subject</th>
+                            <th>Category</th>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                            <th colspan="2">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for complaint in complaint_list %}
+                            <tr>
+                                <td>{{ complaint.id }}</td>
+                                <td>{{ complaint.subject }}</td>
+                                <td>{{ complaint.type }}</td>
+                                <td>{{ complaint.date|date:"d M Y" }}</td>
+                                <td> <a href="{% url 'generate_complaint_pdf' complaint.id %}" class="btn btn-primary">Download PDF</a></td>
+                                <td style="color: green; font-weight: bold;">
+                                    {{ complaint.status }}
+                                </td>
+                                <td colspan="2">
+                                    <form method="POST" action="{% url 'solvedcomplaints' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="cid2" value="{{ complaint.id }}">
+                                        {{ form|crispy }}
+                                    </td>
+                                        <td>
+                                        <button type="submit" class="btn btn-success mt-2">Submit</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="text-center">No solved complaints found.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

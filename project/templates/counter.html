@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}User Profile{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidenav {
+            width: 300px;
+            background-color: #343a40;
+            color: white;
+            padding: 15px;
+            height: auto;
+        }
+        .sidenav a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 10px 0;
+        }
+        .sidenav a.active, .sidenav a:active {
+            background-color: white;
+            color: #343a40;
+            border-radius: 5px;
+        }
+        .sidenav a:hover {
+            background-color: #495057;
+            border-radius: 5px;
+        }
+        .content {
+            flex: 1;
+            padding: 20px;
+        }
+        .content h1 {
+            margin-bottom: 20px;
+        }
+        button {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        .sidenav h4 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        h1 {
+            font-size: 2rem;
+        }
+        .name {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            color: white;
+            font-weight: bold;
+            font-style: italic;
+        }
+        .alert .btn-close {
+            padding: 0.5rem;
+        }
+        
+    </style>
+</head>
+<body>
+    <!-- Side Navigation Bar -->
+    <div class="sidenav">
+        <h4>Complaint Management System</h4>
+        <h4 class="name">Welcome {{ user.first_name }}</h4>
+        <a href="{% url 'counter' %}" class="{% if request.path == '/counter/' %}active{% endif %}">Dashboard</a>
+        <a href="{% url 'profileg' %}" class="{% if request.path == '/profileg/' %}active{% endif %}">Profile</a>
+        <a href="{% url 'passwordchangeg' %}" class="{% if request.path == '/passwordchangeg/' %}active{% endif %}">Password Reset</a>
+        <a href="{% url 'allcomplaints' %}" class="{% if request.path == '/allcomplaints/' %}active{% endif %}">View All Complaints</a>
+        <a href="{% url 'solvedcomplaints' %}" class="{% if request.path == '/solvedcomplaints/' %}active{% endif %}">Solved Complaints</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+
+        <!--  Messages at the top -->
+        {% if messages %}
+            <div class="container mt-2">
+                {% for message in messages %}
+                    <div class="alert {{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}
+        <div style="display: flex; gap: 20px; justify-content: space-around; flex-wrap: wrap; text-align: center; margin-top: 10px;">
+
+            <div style="background: #f2f2f2; padding: 20px; border-radius: 10px;">
+                <h5>Total Complaints:</h5>
+                <h1>{{ total }}</h1>
+            </div>
+
+            <div style="background: #f2f2f2; padding: 20px; border-radius: 10px;">
+                <h5>Solved Complaints:</h5>
+                <h1>{{ resolved }}</h1>
+            </div>
+
+            <div style="background: #f2f2f2; padding: 20px; border-radius: 10px;">
+                <h5>Complaints In Progress:</h5>
+                <h1>{{ inprogress }}</h1>
+            </div>
+
+            <div style="background: #f2f2f2; padding: 20px; border-radius: 10px;">
+                <h5>Pending Complaints:</h5>
+                <h1>{{ pending }}</h1>
+            </div>
+
+        </div>
+
+        <div id="container" style="margin-top:50px;"></div>
+        <br>
+
+
+        <!-- Highcharts  for charts-->
+        <script src="https://code.highcharts.com/highcharts.src.js"></script>
+        <script>
+        Highcharts.chart('container', {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: 'Complaints Statistics'
+            },
+            xAxis: {
+                categories: [
+                    {% for data in graphset %}'{{ data.type }}'{% if not forloop.last %}, {% endif %}{% endfor %}
+                ]
+            },
+            yAxis: {
+                title: {
+                    text: 'Number of Complaints'
+                }
+            },
+            series: [{
+                name: 'Total',
+                data: [
+                    {% for data in graphset %}{{ data.total }}{% if not forloop.last %}, {% endif %}{% endfor %}
+                ],
+                color:'#7cb5ec'
+            }, {
+                name: 'In Progress',
+                data: [
+                    {% for data in graphset %}{{ data.inprogress }}{% if not forloop.last %}, {% endif %}{% endfor %}
+                ],
+                color: '#FFC72C'
+            }, {
+                name: 'Pending',
+                data: [
+                    {% for data in graphset %}{{ data.pending }}{% if not forloop.last %}, {% endif %}{% endfor %}
+                ],
+                color: '#E0115F'
+            }, {
+                name: 'Solved',
+                data: [
+                    {% for data in graphset %}{{ data.solved }}{% if not forloop.last %}, {% endif %}{% endfor %}
+                ],
+                color: '#32CD32'
+            }]
+        });
+        </script>
+        <br><br>
+        {% endblock %}
+    </div>
+    {% if not user.is_authenticated %}
+    <script>
+      window.location.href = "{% url 'login' %}";
+    </script>
+  {% endif %}
+  
+    
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
